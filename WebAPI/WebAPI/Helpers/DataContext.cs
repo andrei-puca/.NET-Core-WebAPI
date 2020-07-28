@@ -1,14 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
-
 using Microsoft.Extensions.Configuration;
+using WebAPI.Entities;
 
-namespace WebAPI.Models
+namespace WebAPI.Helpers
 {
-    public class PaymentDetailContext : DbContext
+    public class DataContext : DbContext
     {
         protected readonly IConfiguration Configuration;
 
-        public PaymentDetailContext(IConfiguration configuration)
+        public DataContext(IConfiguration configuration)
         {
             Configuration = configuration;
         }
@@ -16,10 +16,9 @@ namespace WebAPI.Models
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
             // connect to sql server database
-            options.UseSqlServer(Configuration.GetConnectionString("HomeConnection"));
+            options.UseSqlServer(Configuration.GetConnectionString("WebApiDatabase"));
         }
 
-        public DbSet<PaymentDetail> PaymentDetails { get; set; }
-
+        public DbSet<User> Users { get; set; }
     }
 }

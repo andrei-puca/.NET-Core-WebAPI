@@ -1,16 +1,21 @@
-﻿namespace WebAPI.Entities
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace WebAPI.Models.Users
 {
-    public class User
+    public class RegisterModel
     {
-        public int Id { get; set; }
+        [Required]
         public string FirstName { get; set; }
+
+        [Required]
         public string LastName { get; set; }
+
+        [Required]
         public string Username { get; set; }
+
+        [Required]
         public string Password { get; set; }
         public string Role { get; set; }
-        public string Token { get; set; }
 
-        public byte[] PasswordHash { get; set; }
-        public byte[] PasswordSalt { get; set; }
     }
 }
