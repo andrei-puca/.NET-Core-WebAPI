@@ -113,8 +113,8 @@ namespace WebAPI.Controllers
         public async Task<ActionResult<IEnumerable<User>>> GetPaymentDetails()
         {
             return await _context.Users.ToListAsync();
-        }
 
+        }
 
 
         [HttpGet("{id}")]
