@@ -1,6 +1,11 @@
-﻿using System;
+﻿using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
+using System.Text;
 using WebAPI.Entities;
 using WebAPI.Helpers;
 
@@ -19,20 +24,18 @@ namespace WebAPI.Services
     public class UserService : IUserService
     {
         private DataContext _context;
+        private readonly AppSettings _appSettings;
 
-        public UserService(DataContext context)
+        public UserService(DataContext context, IOptions<AppSettings> appSettings)
         {
-            _context = context;
+            _context = context; 
+            _appSettings = appSettings.Value;
         }
-
+       
         public User Authenticate(string username, string password)
         {
-            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
-                return null;
-
             var user = _context.Users.SingleOrDefault(x => x.Username == username);
-
-            // check if username exists
+            // return null if user not found
             if (user == null)
                 return null;
 
@@ -40,7 +43,23 @@ namespace WebAPI.Services
             if (!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
                 return null;
 
-            // authentication successful
+
+            // authentication successful so generate jwt token
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new Claim[]
+                {
+                    new Claim(ClaimTypes.Name, user.Id.ToString()),
+                    new Claim(ClaimTypes.Role, user.Role)
+                }),
+                Expires = DateTime.UtcNow.AddDays(7),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            user.Token = tokenHandler.WriteToken(token);
+
             return user;
         }
 
