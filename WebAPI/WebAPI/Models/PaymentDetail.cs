@@ -26,6 +26,7 @@ namespace WebAPI.Models
 
         public string AccountType { get; set; }
 
+        public int Balance { get; set; }
         public int UserId { get; set; }
 
     }

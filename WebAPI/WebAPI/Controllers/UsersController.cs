@@ -67,7 +67,7 @@ namespace WebAPI.Controllers
             try
             {
                 // create user
-                _userService.Create(user, model.Password, paymentDetail);
+                _userService.Create(user, model.Password);
                 return Ok();
             }
             catch (AppException ex)

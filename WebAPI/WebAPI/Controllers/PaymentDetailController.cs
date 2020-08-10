@@ -5,7 +5,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using WebAPI.Entities;
+using WebAPI.Helpers;
 using WebAPI.Models;
+using System.Security.Claims;
 
 namespace WebAPI.Controllers
 {
@@ -14,6 +17,8 @@ namespace WebAPI.Controllers
     public class PaymentDetailController : ControllerBase
     {
         private readonly PaymentDetailContext _context;
+        
+      
 
         public PaymentDetailController(PaymentDetailContext context)
         {
@@ -64,6 +69,23 @@ namespace WebAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<PaymentDetail>> GetPaymentDetail(int id)
         {
+
+            //using (var ctx = _context)
+            //{
+            //    var student = (from s in ctx.PaymentDetails
+            //                   where s.UserId == 2014
+            //                   select s);
+            //}
+
+            //var claimsIdentity = (ClaimsIdentity)this.User.Identity;
+            //var currentUserId = claimsIdentity.Name;
+
+
+            //if (_context.PaymentDetails.Any(x => x.UserId == Convert.ToInt32(currentUserId)))
+            //{ 
+            
+            //}
+
             var paymentDetail = await _context.PaymentDetails.FindAsync(id);
 
             if (paymentDetail == null)
@@ -73,6 +95,7 @@ namespace WebAPI.Controllers
 
             return paymentDetail;
         }
+       
 
         // POST: api/PaymentDetail
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
@@ -80,6 +103,11 @@ namespace WebAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<PaymentDetail>> PostPaymentDetail(PaymentDetail paymentDetail)
         {
+   
+            var claimsIdentity = (ClaimsIdentity)this.User.Identity;
+            var currentUserId = claimsIdentity.Name;
+            paymentDetail.UserId = Convert.ToInt32(currentUserId);
+
             _context.PaymentDetails.Add(paymentDetail);
             await _context.SaveChangesAsync();
 

@@ -31,10 +31,10 @@ namespace WebAPI.Services
         public UserService(DataContext context, IOptions<AppSettings> appSettings, PaymentDetailContext context2)
         {
             _context2 = context2;
-            _context = context; 
+            _context = context;
             _appSettings = appSettings.Value;
         }
-       
+
         public User Authenticate(string username, string password)
         {
             var user = _context.Users.SingleOrDefault(x => x.Username == username);
@@ -62,9 +62,9 @@ namespace WebAPI.Services
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
             user.Token = tokenHandler.WriteToken(token);
-            
+
             return user;
-            
+
         }
 
         public IEnumerable<User> GetAll()
@@ -79,14 +79,6 @@ namespace WebAPI.Services
 
         public User Create(User user, string password)
         {
-
-
-
-            if (user.Role == Role.Admin)
-            {
-                throw new AppException("OK");
-            }
-            
 
             // validation
             if (string.IsNullOrWhiteSpace(password))
@@ -104,17 +96,21 @@ namespace WebAPI.Services
             _context.Users.Add(user);
             _context.SaveChanges();
 
-         
-                PaymentDetail pd = new PaymentDetail();
-                pd.UserId = user.Id;
-                pd.CVV = "0";
-                pd.ExpirationDate = "aa";
-                pd.CardNumber = "aa";
-                pd.CardOwnerName = "aa";
+            //If you want to add a reference in PaymentDetails table when the login user is created
+            //if (user.Role == Role.User)
+            //{
+            //    PaymentDetail pd = new PaymentDetail();
+            //    pd.UserId = user.Id;
+            //    pd.CVV = string.Empty;
+            //    pd.ExpirationDate = string.Empty;
+            //    pd.CardNumber = string.Empty;
+            //    pd.CardOwnerName = string.Empty;
 
-                _context2.PaymentDetails.Add(pd);
-                _context2.SaveChanges();
-         
+            //    _context2.PaymentDetails.Add(pd);
+            //    _context2.SaveChanges();
+            //}
+
+
             return user;
         }
 
