@@ -23,6 +23,11 @@ namespace WebAPI.Models
         [Required]
         [Column(TypeName = "varchar(3)")]
         public string CVV { get; set; }
+
+        public string AccountType { get; set; }
+
+        public int UserId { get; set; }
+
     }
 
 }

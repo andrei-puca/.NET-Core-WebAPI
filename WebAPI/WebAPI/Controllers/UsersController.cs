@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 
+
 namespace WebAPI.Controllers
 {
     [Authorize]
@@ -61,11 +62,12 @@ namespace WebAPI.Controllers
         {
             // map model to entity
             var user = _mapper.Map<User>(model);
-
+            Models.PaymentDetail paymentDetail = new Models.PaymentDetail();
+            
             try
             {
                 // create user
-                _userService.Create(user, model.Password);
+                _userService.Create(user, model.Password, paymentDetail);
                 return Ok();
             }
             catch (AppException ex)

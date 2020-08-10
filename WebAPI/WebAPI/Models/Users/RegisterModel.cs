@@ -4,16 +4,16 @@ namespace WebAPI.Models.Users
 {
     public class RegisterModel
     {
-        [Required]
+        //[Required]
         public string FirstName { get; set; }
 
-        [Required]
+       // [Required]
         public string LastName { get; set; }
 
-        [Required]
+       // [Required]
         public string Username { get; set; }
 
-        [Required]
+//        [Required]
         public string Password { get; set; }
         public string Role { get; set; }
 

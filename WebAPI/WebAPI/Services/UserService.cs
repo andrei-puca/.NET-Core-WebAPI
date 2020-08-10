@@ -8,6 +8,7 @@ using System.Security.Claims;
 using System.Text;
 using WebAPI.Entities;
 using WebAPI.Helpers;
+using WebAPI.Models;
 
 namespace WebAPI.Services
 {
@@ -19,15 +20,17 @@ namespace WebAPI.Services
         User Create(User user, string password);
         void Update(User user, string password = null);
         void Delete(int id);
+
     }
 
     public class UserService : IUserService
     {
         private DataContext _context;
         private readonly AppSettings _appSettings;
-
-        public UserService(DataContext context, IOptions<AppSettings> appSettings)
+        private readonly PaymentDetailContext _context2;
+        public UserService(DataContext context, IOptions<AppSettings> appSettings, PaymentDetailContext context2)
         {
+            _context2 = context2;
             _context = context; 
             _appSettings = appSettings.Value;
         }
@@ -59,8 +62,9 @@ namespace WebAPI.Services
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
             user.Token = tokenHandler.WriteToken(token);
-
+            
             return user;
+            
         }
 
         public IEnumerable<User> GetAll()
@@ -75,6 +79,15 @@ namespace WebAPI.Services
 
         public User Create(User user, string password)
         {
+
+
+
+            if (user.Role == Role.Admin)
+            {
+                throw new AppException("OK");
+            }
+            
+
             // validation
             if (string.IsNullOrWhiteSpace(password))
                 throw new AppException("Password is required");
@@ -91,6 +104,17 @@ namespace WebAPI.Services
             _context.Users.Add(user);
             _context.SaveChanges();
 
+         
+                PaymentDetail pd = new PaymentDetail();
+                pd.UserId = user.Id;
+                pd.CVV = "0";
+                pd.ExpirationDate = "aa";
+                pd.CardNumber = "aa";
+                pd.CardOwnerName = "aa";
+
+                _context2.PaymentDetails.Add(pd);
+                _context2.SaveChanges();
+         
             return user;
         }
 

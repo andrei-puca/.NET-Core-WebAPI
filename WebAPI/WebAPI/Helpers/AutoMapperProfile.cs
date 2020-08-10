@@ -2,6 +2,7 @@
 using WebAPI.Entities;
 using WebAPI.Models.Users;
 
+
 namespace WebAPI.Helpers
 {
     public class AutoMapperProfile : Profile
@@ -11,6 +12,7 @@ namespace WebAPI.Helpers
             CreateMap<User, UserModel>();
             CreateMap<RegisterModel, User>();
             CreateMap<UpdateModel, User>();
+            CreateMap<RegisterModel, Models.PaymentDetail>();
         }
     }
 }
