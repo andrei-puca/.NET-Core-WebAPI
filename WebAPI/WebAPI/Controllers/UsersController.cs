@@ -85,6 +85,24 @@ namespace WebAPI.Controllers
             return Ok(model);
         }
 
+        [Authorize(Roles = Role.Admin)]
+        [HttpGet]
+        [Route("getusers")]
+        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+        {
+            List<User> accountsToDisplay = new List<User>();
+            foreach (var account in _context.Users.ToList())
+            {
+                if (account.Role == Role.User)
+                {
+                    accountsToDisplay.Add(account);
+                }
+            }
+            return accountsToDisplay;
+        }
+
+
+
         // GET: api/PaymentDetail
         [Authorize(Roles = Role.Admin)]
         [HttpGet]
@@ -92,7 +110,6 @@ namespace WebAPI.Controllers
         public async Task<ActionResult<IEnumerable<User>>> GetPaymentDetails()
         {
             return await _context.Users.ToListAsync();
-
         }
 
 

@@ -32,7 +32,26 @@ namespace WebAPI.Controllers
             return await _context.PaymentDetails.ToListAsync();
         }
 
-      
+
+        [HttpGet]
+        [Route("useraccounts")]
+        public async Task<ActionResult<IEnumerable<PaymentDetail>>> GetUserAccounts()
+        {
+            var claimsIdentity = (ClaimsIdentity)this.User.Identity;
+            var currentUserId = claimsIdentity.Name;
+            List<PaymentDetail> accountsToDisplay = new List<PaymentDetail>();
+            foreach(var account in _context.PaymentDetails.ToList())
+            {
+                if(account.UserId == Convert.ToInt32(currentUserId))
+                {
+                    accountsToDisplay.Add(account);
+                }
+            }
+            return accountsToDisplay;
+        }
+
+
+
 
         // PUT: api/PaymentDetail/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
